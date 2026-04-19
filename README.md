@@ -16,3 +16,7 @@ You can experiment by changing different variables (angle, velocity, gravity) an
 
 ORIGINAL WORK 
 USAGE OF AI FOR DEBUGGING
+
+-------------------
+
+CREATED FOR HACKCLUB'S FLAVORTOWN EVENT
