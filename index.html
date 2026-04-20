@@ -105,6 +105,7 @@ input, select { width:100%; }
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+const groundY = canvas.height - 40;
 
 const angleSlider = document.getElementById("angle");
 const velocitySlider = document.getElementById("velocity");
@@ -129,7 +130,7 @@ let running = false;
 let path = [];
 
 const startX = 50;
-const startY = canvas.height - 20;
+const startY = groundY;
 
 let maxHeight = 0;
 
