@@ -104,6 +104,8 @@ const distEl = document.getElementById("dist");
 const heightEl = document.getElementById("height");
 
 function reset() {
+    running = false;
+
     x = startX;
     y = groundY;
 
@@ -111,7 +113,7 @@ function reset() {
     vy = 0;
 
     path = [];
-    running = false;
+
     maxHeight = 0;
 
     distEl.textContent = 0;
@@ -173,15 +175,21 @@ function loop() {
 
 document.getElementById("launch").onclick = () => {
 
-    const angle = angleS.value * Math.PI/180;
+    const angle = angleS.value * Math.PI / 180;
     const v = Number(velS.value);
 
     gravity = Number(gravS.value);
 
+    // reset FIRST
+    x = startX;
+    y = groundY;
+
+    path = [];
+    maxHeight = 0;
+
     vx = v * Math.cos(angle) * scale;
     vy = -v * Math.sin(angle) * scale;
 
-    reset();
     running = true;
 };
 
