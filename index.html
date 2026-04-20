@@ -139,7 +139,6 @@ const startY = canvas.height - 20;
 
 let maxHeight = 0;
 
-// FIXED PHYSICS CONSTANT (pixel-based but consistent)
 const dt = 0.016;
 
 function drawBall() {
@@ -167,7 +166,6 @@ function drawPath() {
 function update() {
     if (!running) return;
 
-    // correct gravity integration
     vy += gravity * dt;
 
     x += vx * dt;
@@ -175,12 +173,11 @@ function update() {
 
     path.push({ x, y });
 
-    // track max height (remember y increases downward)
     if (startY - y > maxHeight) {
         maxHeight = startY - y;
     }
 
-    // ground collision
+
     if (y >= startY) {
         running = false;
 
@@ -194,7 +191,7 @@ function update() {
 function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // ground
+
     ctx.strokeStyle = "#444";
     ctx.beginPath();
     ctx.moveTo(0, startY);
@@ -211,7 +208,7 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-// LAUNCH
+
 launchBtn.onclick = () => {
 
     const angle = Number(angleSlider.value) * Math.PI / 180;
@@ -219,7 +216,7 @@ launchBtn.onclick = () => {
 
     gravity = Number(gravitySelect.value);
 
-    // correct decomposition (NO fake scaling)
+
     vx = velocity * Math.cos(angle);
     vy = -velocity * Math.sin(angle);
 
@@ -235,7 +232,7 @@ launchBtn.onclick = () => {
     maxHeightEl.textContent = "0";
 };
 
-// RESET
+
 resetBtn.onclick = () => {
     running = false;
 
@@ -249,7 +246,7 @@ resetBtn.onclick = () => {
     render();
 };
 
-// UI
+
 angleSlider.oninput = () => angleVal.textContent = angleSlider.value;
 velocitySlider.oninput = () => velVal.textContent = velocitySlider.value;
 
