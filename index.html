@@ -1,261 +1,262 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Projectile Playground</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projectile Playground</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin:0;
+            background:#f4f4f4;
+            text-align: center;
 
-<style>
-body {
-    font-family: Arial, sans-serif;
-    margin:0;
-    background:#f4f4f4;
-    text-align: center;
-}
+        }
 
-.app { padding:10px; }
+        .app{
+            padding:10px;
+        }
 
-.container {
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    padding:20px;
-}
+        .container{
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
 
-canvas {
-    background:#111;
-    border-radius:10px;
-}
+        canvas{
+            background: #111;
+            border-radius: 10px;
+        }
 
-.controls {
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    width:200px;
-}
+        .controls{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 200px;
+            padding: 10px;
+        }
 
-button {
-    padding:10px;
-    border:none;
-    border-radius:6px;
-    background:#333;
-    color:white;
-    cursor:pointer;
-}
-
-button:hover { background:#555; }
-
-input, select { width:100%; }
-
-.info {
-    max-width:800px;
-    margin:30px auto;
-    padding-top:15px;
-    border-top:2px solid #ddd;
-    text-align:left;
-}
-</style>
+        .info{
+            max-width:800px;
+            margin:30px auto;
+            padding-top: 15 px;
+            border-top: 2px solid #ddd;
+            text-align: left;
+        }
+        button{
+            padding:10px;
+            border:none;
+            border-radius: 6px;
+            background: #333;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover{
+            background:#555;
+        }
+        input, select {
+            width: 100%
+        }
+    </style>
 </head>
-
 <body>
-
 <div class="app">
-<h1>Projectile Playground</h1>
+    <h1>Projectile Playground</h1>
 
-<div class="container">
-<canvas id="canvas" width="800" height="450"></canvas>
+    <div class="container">
+        <canvas id="canvas" width="800" height="450"></canvas>
 
-<div class="controls">
-<label>Angle: <span id="angleVal">45</span>°</label>
-<input type="range" id="angle" min="0" max="90" value="45">
+        <div class="controls">
+            <label>Angle: <span id="angleVal">45</span>°</label>
+            <input type="range" id="angle" min="0" max="90" value="45">
 
-<label>Velocity: <span id="velVal">50</span></label>
-<input type="range" id="velocity" min="10" max="100" value="50">
+            <label>Velocity: <span id="velVal">50</span></label>
+            <input type="range" id="velocity" min="10" max="100" value="50">
 
-<label>Gravity:</label>
-<select id="gravity">
-<option value="9.8">Earth</option>
-<option value="1.6">Moon</option>
-<option value="3.7">Mars</option>
-</select>
+            <label> Gravity: </label>
+            <select id="gravity">
+                <option value="9.8">Earth</option>
+                <option value="1.6">Moon</option>
+                <option value="3.7">Mars</option>
+            </select>
 
-<button id="launch">Launch</button>
-<button id="reset">Reset</button>
+                <button id="launch">Launch</button>
+                <button id="reset"> Reset</button>
+            <label>
+                <input type="checkbox" id="vectors"> Show path
+            </label>
 
-<label>
-<input type="checkbox" id="vectors"> Show path
-</label>
+                <p>Distance: <span id="distance">0</span></p>
+                <p>Max Height: <span id="maxHeight">0</span></p>
+        </div>
+    </div>
+    <div class="info">
+        <h2>About Projectile Motion</h2>
+        <p>
+            Projectile motion describes how an object moves through the air under the influence of gravity.
+            The motion can be split into two parts.
+        </p>
 
-<p>Distance: <span id="distance">0</span></p>
-<p>Max Height: <span id="maxHeight">0</span></p>
-</div>
-</div>
+        <ul>
+            <li>Horizontal motion: constant velocity</li>
+            <li>Vertical motion: acceleration due to gravity</li>
+        </ul>
 
-<div class="info">
-<h2>About Projectile Motion</h2>
-<p>Horizontal motion = constant velocity</p>
-<p>Vertical motion = acceleration due to gravity</p>
+        <p>
+            By changing the angle, velocity, and gravity, you can see how the trajectory,
+            maximum height, and distance are affected.
+        </p>
 </div>
 
 <script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
 
-const angleSlider = document.getElementById("angle");
-const velocitySlider = document.getElementById("velocity");
-const gravitySelect = document.getElementById("gravity");
+    const angleSlider = document.getElementById("angle");
+    const velocitySlider = document.getElementById("velocity");
+    const gravitySelect = document.getElementById("gravity");
+    
+    const angleVal = document.getElementById("angleVal");
+    const velVal = document.getElementById("velVal");
 
-const angleVal = document.getElementById("angleVal");
-const velVal = document.getElementById("velVal");
+    const launchBtn = document.getElementById("launch");
+    const resetBtn = document.getElementById("reset");
 
-const launchBtn = document.getElementById("launch");
-const resetBtn = document.getElementById("reset");
+    const vectorsCheckbox = document.getElementById("vectors");
 
-const vectorsCheckbox = document.getElementById("vectors");
+    const distanceEl = document.getElementById("distance");
+    const maxHeightEl = document.getElementById("maxHeight");
 
-const distanceEl = document.getElementById("distance");
-const maxHeightEl = document.getElementById("maxHeight");
+    let angle = 45;
+    let velocity = 50;
+    let gravity = 9.8;
 
-// State
-let x = 50;
-let y = canvas.height - 20;
+    let x=50;
+    let y=canvas.height - 20;
 
-let vx = 0;
-let vy = 0;
+    const startY = canvas.height - 20;
+    const startX = 50;
+    let maxHeight = canvas.height;
+    let distance = 0;
 
-let gravity = 9.8;
-let running = false;
+    let vx=0;
+    let vy=0;
 
-let startX = 50;
-let startY = canvas.height - 20;
+    let running = false;
+    let path = [];
 
-let maxHeight = y;
-let path = [];
-
-// Draw ball
-function drawBall() {
-    ctx.beginPath();
-    ctx.arc(x, y, 8, 0, Math.PI * 2);
-    ctx.fillStyle = "red";
-    ctx.fill();
-}
-
-// Draw path
-function drawPath() {
-    if (path.length < 2) return;
-
-    ctx.beginPath();
-    ctx.strokeStyle = "cyan";
-
-    for (let i = 0; i < path.length; i++) {
-        let p = path[i];
-        if (i === 0) ctx.moveTo(p.x, p.y);
-        else ctx.lineTo(p.x, p.y);
-    }
-    ctx.stroke();
-}
-
-// Update physics
-function update() {
-    if (!running) return;
-
-    const dt = 0.016;
-
-    vy += gravity * dt;
-    x += vx * dt;
-    y += vy * dt;
-
-    path.push({x, y});
-
-    if (y < maxHeight) {
-        maxHeight = y;
+    function drawBall(){
+        ctx.fillStyle= "red";
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, Math.PI*2);
+        ctx.fill();
+        }
+    
+    function drawPath(){
+        ctx.strokeStyle = "cyan";
+        ctx.beginPath();
+        for (let i = 0; i < path.length; i++){
+            const p = path [i];
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+        }
+        ctx.stroke();
     }
 
-    // hit ground
-    if (y >= canvas.height - 10) {
+    function update() {
+        if (!running) return;
+
+        const dt = 0.016;
+
+        vy += Number(gravitySelect.value);
+
+        x+=vx*dt;
+        y += vy*dt;
+
+        path.push({ x,y });
+
+        if(y < maxHeight) {
+            maxHeight = y;
+        }
+
+        if(y > canvas.height - 10 ) {
+            running = false;
+            distance = x - startX;
+            distanceEl.textContent = distance.toFixed(1);
+            maxHeightEl.textContent = (canvas.height - maxHeight).toFixed(1);
+        }
+    }
+
+    function render() {
+        ctx.clearRect (0, 0, canvas.width, canvas.height);
+
+        ctx.strokeStyle = "#444";
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height - 10);
+        ctx.lineTo(canvas.width, canvas.height - 10);
+        ctx.stroke();
+
+        if (vectorsCheckbox.checked){
+            drawPath();
+        }
+        drawBall();
+    
+    }
+    function loop(){
+        update();
+        render();
+        requestAnimationFrame(loop);
+    }
+
+
+    launchBtn.onclick = () => {
+        const angle = Number(angleSlider.value);
+        const velocity = Number(velocitySlider.value);
+        const gravity = Number(gravitySelect.value);
+
+        const rad = angle * Math.PI/180;
+
+        vx = velocity * 3.5 * Math.cos(rad);
+        vy = -velocity* 3.5 * Math.sin(rad);
+
+        x=50;
+        y=canvas.height-20;
+
+        path = [];
+        running = true;
+
+        distanceEl.textContent = "0";
+        maxHeightEl.textContent = "0";
+
+        startX=x;
+        maxHeight=y;
+    };
+
+
+    resetBtn.addEventListener("click", () => {
         running = false;
+        x=startX;
+        y=startY;
 
-        const distance = x - startX;
+        vx = 0;
+        vy = 0;
 
-        distanceEl.textContent = distance.toFixed(1);
-        maxHeightEl.textContent = (canvas.height - maxHeight).toFixed(1);
-    }
-}
+        path = [];
+        running = false;
+        render();
+    });
 
-// Render
-function render() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    angleSlider.addEventListener("input", () => {
+        angleVal.textContent = angleSlider.value;
+    });
 
-    // ground
-    ctx.beginPath();
-    ctx.moveTo(0, canvas.height - 10);
-    ctx.lineTo(canvas.width, canvas.height - 10);
-    ctx.strokeStyle = "#444";
-    ctx.stroke();
+    velocitySlider.addEventListener("input", () => {
+        velVal.textContent = velocitySlider.value;
+    });
 
-    if (vectorsCheckbox.checked) drawPath();
-    drawBall();
-}
+    loop();
 
-// Loop
-function loop() {
-    update();
-    render();
-    requestAnimationFrame(loop);
-}
-
-// Launch
-launchBtn.onclick = () => {
-    const angle = Number(angleSlider.value);
-    const velocity = Number(velocitySlider.value);
-    gravity = Number(gravitySelect.value);
-
-    const rad = angle * Math.PI / 180;
-
-    vx = velocity * 3.5 * Math.cos(rad);
-    vy = -velocity * 3.5 * Math.sin(rad);
-
-    x = 50;
-    y = canvas.height - 20;
-
-    startX = x;
-    maxHeight = y;
-
-    path = [];
-
-    distanceEl.textContent = "0";
-    maxHeightEl.textContent = "0";
-
-    running = true;
-};
-
-// Reset
-resetBtn.onclick = () => {
-    running = false;
-
-    x = 50;
-    y = canvas.height - 20;
-
-    vx = 0;
-    vy = 0;
-
-    path = [];
-
-    render();
-};
-
-// UI updates
-angleSlider.oninput = () => {
-    angleVal.textContent = angleSlider.value;
-};
-
-velocitySlider.oninput = () => {
-    velVal.textContent = velocitySlider.value;
-};
-
-// Start loop
-loop();
 </script>
-
 </body>
 </html>
